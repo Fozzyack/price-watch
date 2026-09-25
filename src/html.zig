@@ -1,6 +1,6 @@
 const std = @import("std");
 
-pub fn get_page_content(page: []u8, allocator: std.mem.Allocator, io: std.Io) !void {
+pub fn get_page_content(page: []const u8, allocator: std.mem.Allocator, io: std.Io) !void {
     var client: std.http.Client = .{
         .allocator = allocator,
         .io = io,
