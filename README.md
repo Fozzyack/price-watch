@@ -1,5 +1,7 @@
 # price-watch
 
+This project is for learning Zig through a small, practical price-checking application.
+
 A small Zig project that fetches HTML from selected product sites to monitor item prices.
 
 ## Status
