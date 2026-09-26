@@ -54,11 +54,16 @@ const dimensions = [
 ];
 
 const sizes = [
-  { name: "Compact", detail: "13-inch chassis" },
-  { name: "Standard", detail: "15-inch chassis" },
-  { name: "Extended", detail: "17-inch chassis" },
-  { name: "Rig", detail: "Rack-mount frame" },
+  { name: "Compact", detail: "13-inch chassis", price: 3799 },
+  { name: "Standard", detail: "15-inch chassis", price: 4299 },
+  { name: "Extended", detail: "17-inch chassis", price: 4899 },
+  { name: "Rig", detail: "Rack-mount frame", price: 5599 },
 ];
+
+const priceFormat = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
 
 const reviews = [
   {
@@ -98,6 +103,8 @@ const footerLinks = [
 
 export default function Product1() {
   const [size, setSize] = useState("Standard");
+  const selected = sizes.find((option) => option.name === size) ?? sizes[1];
+  const price = priceFormat.format(selected.price);
 
   return (
     <main className="cp-page">
@@ -143,8 +150,8 @@ export default function Product1() {
           <div className="cp-price-block">
             <div>
               <span className="cp-price-label">Street price</span>
-              <strong className="cp-price" data-price="$4,299.00" data-currency="USD">
-                $4,299.00
+              <strong className="cp-price" data-price={price} data-currency="USD" data-size={size}>
+                {price}
               </strong>
             </div>
             <span className="cp-stock">In stock · 12 units</span>
@@ -152,6 +159,13 @@ export default function Product1() {
 
           <p className="cp-coupon">
             <a href="#login">Log in</a> to see if you have coupons
+          </p>
+
+          <p className="cp-disclaimer">
+            <strong>TL;DR</strong> Discounts apply to the previous ticketed or
+            advertised price before the offer. As we negotiate, products will likely
+            have sold below ticketed or advertised price prior to the offer. Prices
+            may differ at airport stores.
           </p>
 
           <div className="cp-options">
@@ -167,6 +181,7 @@ export default function Product1() {
                 >
                   <strong>{option.name}</strong>
                   <small>{option.detail}</small>
+                  <small className="cp-size-price">{priceFormat.format(option.price)}</small>
                 </button>
               ))}
             </div>

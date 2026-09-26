@@ -483,6 +483,24 @@
 }
 .cp-coupon a:hover { color: var(--cp-magenta); }
 
+.cp-disclaimer {
+  margin: 12px 0 0;
+  max-width: 440px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--cp-muted);
+}
+.cp-disclaimer strong {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 6px;
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--cp-bg);
+  background: var(--cp-lime);
+}
+
 .cp-options { margin: 26px 0 0; }
 .cp-options-label {
   display: block;
@@ -523,6 +541,11 @@
 .cp-size small {
   font-size: 10px;
   color: var(--cp-muted);
+}
+.cp-size-price {
+  margin-top: 2px;
+  font-family: "Courier New", monospace;
+  color: var(--cp-cyan) !important;
 }
 .cp-size[aria-pressed="true"] strong { color: var(--cp-cyan); }
 
