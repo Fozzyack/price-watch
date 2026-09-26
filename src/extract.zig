@@ -52,6 +52,8 @@ pub fn extract(product: *Product, io: std.Io, allocator: std.mem.Allocator) !voi
     }
 }
 
+// Tests ----
+
 test "Product initializes with no URLs" {
     const product = Product.init_product("Headphones");
 
