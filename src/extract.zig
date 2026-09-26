@@ -12,23 +12,23 @@ pub const Product = struct {
         return .{ .name = name };
     }
 
+    pub fn add_url(self: *Product, url: []const u8, pattern: []const u8, allocator: std.mem.Allocator) !void {
+        const urls_len = self.urls.len;
+        if (urls_len == 0) {
+            self.urls = try allocator.alloc(ProductUrl, 1);
+        } else {
+            self.urls = try allocator.realloc(self.urls, urls_len + 1);
+        }
+
+        const new_url: ProductUrl = .{
+            .url = url,
+            .pattern = pattern,
+        };
+
+        self.urls[urls_len] = new_url;
+    }
+
     pub fn deinit(self: *Product, allocator: std.mem.Allocator) void {
         allocator.free(self.urls);
     }
 };
-
-pub fn add_url(product: *Product, url: []const u8, pattern: []const u8, allocator: std.mem.Allocator) !void {
-    const urls_len = product.urls.len;
-    if (urls_len == 0) {
-        product.urls = try allocator.alloc(ProductUrl, 1);
-    } else {
-        product.urls = try allocator.realloc(product.urls, urls_len + 1);
-    }
-
-    const new_url: ProductUrl = .{
-        .url = url,
-        .pattern = pattern,
-    };
-
-    product.urls[urls_len] = new_url;
-}
