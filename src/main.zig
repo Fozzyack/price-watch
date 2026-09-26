@@ -15,5 +15,6 @@ pub fn main() !void {
     try product_1.add_url("http://localhost:5173/product-1", "data-price=\"", "\"", arena.allocator());
     try product_1.add_url("http://localhost:5173/product-2", "data-price=\"", "\"", arena.allocator());
     try product_1.add_url("http://localhost:5173/product-3", "data-price=\"", "\"", arena.allocator());
+    try product_1.add_url("http://localhost:5173/product-4", "data-price=\"", "\"", arena.allocator());
     try extract.extract(&product_1, io, arena.allocator());
 }
