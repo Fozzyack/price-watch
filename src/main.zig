@@ -15,5 +15,5 @@ pub fn main() !void {
 
     const body = try html.get_page_content("frasier.dev", arena.allocator(), io);
 
-    std.debug.print("{any}\n", .{body});
+    std.debug.print("{s}\n", .{body});
 }
