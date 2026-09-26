@@ -1,9 +1,5 @@
 const std = @import("std");
 
-const HTMLError = error {
-    StatusNotOk,
-};
-
 pub fn get_page_content(page: []const u8, allocator: std.mem.Allocator, io: std.Io) ![]u8 {
     var client: std.http.Client = .{
         .allocator = allocator,
@@ -24,7 +20,7 @@ pub fn get_page_content(page: []const u8, allocator: std.mem.Allocator, io: std.
     var response = try req.receiveHead(&header_buffer);
 
     if (@intFromEnum(response.head.status) > 300 or @intFromEnum(response.head.status) < 200) {
-        return HTMLError.StatusNotOk;
+        return error.StatusNotOk;
     }
 
     var transfer_buffer: [8192]u8 = undefined;
@@ -37,7 +33,6 @@ pub fn get_page_content(page: []const u8, allocator: std.mem.Allocator, io: std.
     );
 
     const body = try reader.allocRemaining(allocator, std.Io.Limit.limited(10 * 1024 * 1024));
-    defer allocator.free(body);
 
     return body;
 }
