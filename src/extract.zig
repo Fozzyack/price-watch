@@ -1,13 +1,13 @@
 const std = @import("std");
 
-const Url = struct {
+const ProductUrl = struct {
     url: []const u8,
     pattern: []const u8,
 };
 
 const Product = struct {
     name: []const u8,
-    urls: []Url = &.{},
+    urls: []ProductUrl = &.{},
     pub fn init_product(name: []const u8) Product {
         return .{ .name = name };
     }
@@ -20,12 +20,12 @@ const Product = struct {
 pub fn add_url(product: *Product, url: []const u8, pattern: []const u8, allocator: std.mem.Allocator) !void {
     const urls_len = product.urls.len;
     if (urls_len == 0) {
-        product.urls = try allocator.alloc(Url, 1);
+        product.urls = try allocator.alloc(ProductUrl, 1);
     } else {
         product.urls = try allocator.realloc(product.urls, urls_len + 1);
     }
 
-    const new_url: Url = .{
+    const new_url: ProductUrl = .{
         .url = url,
         .pattern = pattern,
     };
