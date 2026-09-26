@@ -1,6 +1,4 @@
 .zig-cache/
 zig-out/
-graphify-out/
-AGENTS.md
 *.o
 
