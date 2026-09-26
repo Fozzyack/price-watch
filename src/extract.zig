@@ -2,12 +2,12 @@ const std = @import("std");
 
 
 const Url = struct {
-    url: []const u8 = undefined,
-    pattern: []const u8 = undefined,
+    url: []const u8,
+    pattern: []const u8,
 };
 
 const Product = struct {
-    name: []const u8 = undefined,
+    name: []const u8,
     urls: [] Url = &.{},
     fn deinit(self: *Product, allocator: std.mem.Allocator) void {
         allocator.free(self.urls);
