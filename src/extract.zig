@@ -58,12 +58,24 @@ fn format_price(price: []u8) []u8 {
     return formatted_price[0..write_index];
 }
 
+fn convert_price(price: []u8, is_minor: bool) !i32 {
+    var converted_price_f16: f32 = try std.fmt.parseFloat(f32, price);
+    if (!is_minor) {
+        converted_price_f16 *= 100;
+    }
+
+    const converted_price: i32 = @intFromFloat(converted_price_f16);
+    return converted_price;
+}
+
 pub fn extract(product: *Product, io: std.Io, allocator: std.mem.Allocator) !void {
     for (product.urls) |url| {
         const body = try http.get_page_content(url.url, allocator, io);
-        var price = try get_price(body, &url);
-        price = format_price(price);
-        std.debug.print("{s}\n", .{price});
+        var price_str = try get_price(body, &url);
+        price_str = format_price(price_str);
+        const price: i32 = try convert_price(price_str, url.is_minor);
+        std.debug.print("{s}\n", .{price_str});
+        std.debug.print("{d}\n", .{price});
     }
 }
 
