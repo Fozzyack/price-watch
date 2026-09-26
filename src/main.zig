@@ -13,5 +13,9 @@ pub fn main() !void {
     const io = threaded_io.io();
     std.debug.print("{any}\n", .{@TypeOf(io)});
 
-    try html.get_page_content("frasier.dev", arena.allocator(), io);
+    const body = html.get_page_content("frasier.dev", arena.allocator(), io) catch |err| {
+        return err;
+    };
+
+    std.debug.print("{any}\n", .{body});
 }

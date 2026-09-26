@@ -1,6 +1,6 @@
 const std = @import("std");
 
-pub fn get_page_content(page: []const u8, allocator: std.mem.Allocator, io: std.Io) !void {
+pub fn get_page_content(page: []const u8, allocator: std.mem.Allocator, io: std.Io) ![]u8 {
     var client: std.http.Client = .{
         .allocator = allocator,
         .io = io,
@@ -33,5 +33,5 @@ pub fn get_page_content(page: []const u8, allocator: std.mem.Allocator, io: std.
     const body = try reader.allocRemaining(allocator, std.Io.Limit.limited(10 * 1024 * 1024));
     defer allocator.free(body);
 
-    std.debug.print("{s}\n", .{body});
+    return body;
 }
