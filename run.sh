@@ -1,4 +1,4 @@
 #!/usr/bin/bash
 
 zig build
-./zig-out/bin/zystem
+./zig-out/bin/price-watch

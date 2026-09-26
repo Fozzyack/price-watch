@@ -1,4 +1,4 @@
-# zystem
+# price-watch
 
 A small Zig project that fetches HTML from selected product sites to monitor item prices.
 
