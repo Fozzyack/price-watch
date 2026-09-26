@@ -44,11 +44,27 @@ fn get_price(body: []u8, url: *const ProductUrl) ![]u8 {
     return price;
 }
 
+fn format_price(price: []u8) []u8 {
+    var formatted_price = if (price.len > 0 and price[0] == '$') price[1..] else price;
+    var write_index: usize = 0;
+
+    for (formatted_price) |character| {
+        if (character == ',') continue;
+
+        formatted_price[write_index] = character;
+        write_index += 1;
+    }
+
+    return formatted_price[0..write_index];
+}
+
 pub fn extract(product: *Product, io: std.Io, allocator: std.mem.Allocator) !void {
     for (product.urls) |url| {
         const body = try http.get_page_content(url.url, allocator, io);
         const price = try get_price(body, &url);
+        const formatted_price: []u8 = format_price(price);
         std.debug.print("{s}\n", .{price});
+        std.debug.print("{s}\n", .{formatted_price});
     }
 }
 
@@ -109,4 +125,12 @@ test "get_price rejects missing markers" {
 
     try expectError(error.InvalidPrice, get_price(&missing_start, &url));
     try expectError(error.InvalidPrice, get_price(&missing_end, &url));
+}
+
+test "format_price removes currency symbols and commas" {
+    var price = "$1,299.99".*;
+
+    const formatted_price = format_price(&price);
+
+    try expectEqualStrings("1299.99", formatted_price);
 }
