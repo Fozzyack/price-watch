@@ -61,10 +61,9 @@ fn format_price(price: []u8) []u8 {
 pub fn extract(product: *Product, io: std.Io, allocator: std.mem.Allocator) !void {
     for (product.urls) |url| {
         const body = try http.get_page_content(url.url, allocator, io);
-        const price = try get_price(body, &url);
-        const formatted_price: []u8 = format_price(price);
+        var price = try get_price(body, &url);
+        price = format_price(price);
         std.debug.print("{s}\n", .{price});
-        std.debug.print("{s}\n", .{formatted_price});
     }
 }
 
