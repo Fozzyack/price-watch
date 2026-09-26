@@ -13,14 +13,20 @@ has realistic HTML to parse.
 
 ## Price markup
 
-Prices are wrapped in elements carrying `data-price` and `data-currency` attributes so the scraper can target them
-without relying on visual formatting:
+The product pages deliberately use a few price-markup patterns so the scraper can practice different extraction
+rules without relying on visual formatting:
 
 ```html
 <strong class="cp-price" data-price="$3,799.00" data-currency="USD" data-size="Compact">$3,799.00</strong>
 ```
 
-`data-price` changes with the selected size.
+Product 1 and Product 2 use a formatted currency string in `data-price`. Product 3 stores a cents value in
+`data-price` and includes `data-price-unit="cents"`. Product 4 uses `data-current-price` rather than
+`data-price`:
+
+```html
+<strong data-current-price="$649.00" data-currency="USD" data-finish="Oat">$649.00</strong>
+```
 
 ## Getting started
 

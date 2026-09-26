@@ -59,7 +59,7 @@ export default function Product4() {
           <div className="ag-price-row">
             <div>
               <span>From</span>
-              <strong data-price={price} data-currency="USD" data-finish={finish}>{price}</strong>
+              <strong data-current-price={price} data-currency="USD" data-finish={finish}>{price}</strong>
             </div>
             <p>Ships in 2-3 business days<br />30-day home trial</p>
           </div>
