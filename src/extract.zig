@@ -3,7 +3,8 @@ const http = @import("html.zig");
 
 pub const ProductUrl = struct {
     url: []const u8,
-    pattern: []const u8,
+    pattern_start: []const u8,
+    pattern_end: []const u8,
 };
 
 pub const Product = struct {
@@ -13,7 +14,7 @@ pub const Product = struct {
         return .{ .name = name };
     }
 
-    pub fn add_url(self: *Product, url: []const u8, pattern: []const u8, allocator: std.mem.Allocator) !void {
+    pub fn add_url(self: *Product, url: []const u8, pattern_start: []const u8, pattern_end: []const u8, allocator: std.mem.Allocator) !void {
         const urls_len = self.urls.len;
         if (urls_len == 0) {
             self.urls = try allocator.alloc(ProductUrl, 1);
@@ -23,7 +24,8 @@ pub const Product = struct {
 
         const new_url: ProductUrl = .{
             .url = url,
-            .pattern = pattern,
+            .pattern_start = pattern_start,
+            .pattern_end = pattern_end,
         };
 
         self.urls[urls_len] = new_url;
@@ -35,9 +37,9 @@ pub const Product = struct {
 };
 
 fn get_price(body: []u8, url: *const ProductUrl) ![]u8 {
-    const start: usize = std.mem.indexOf(u8, body, url.pattern) orelse unreachable;
-    const price_start = start + url.pattern.len;
-    const price_end = std.mem.indexOfPos(u8, body, price_start, "\"") orelse return error.InvalidPrice;
+    const start: usize = std.mem.indexOf(u8, body, url.pattern_start) orelse unreachable;
+    const price_start = start + url.pattern_start.len;
+    const price_end = std.mem.indexOfPos(u8, body, price_start, url.pattern_end) orelse return error.InvalidPrice;
     const price = body[price_start..price_end];
     return price;
 }
