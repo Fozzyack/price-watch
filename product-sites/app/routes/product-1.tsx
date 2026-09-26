@@ -23,7 +23,6 @@ export default function Product1() {
     <main className="cp-page">
       <div className="cp-glow cp-glow-cyan" aria-hidden="true" />
       <div className="cp-glow cp-glow-magenta" aria-hidden="true" />
-      <div className="cp-scanlines" aria-hidden="true" />
 
       <nav className="cp-nav" aria-label="Main navigation">
         <a className="cp-brand" href="/">

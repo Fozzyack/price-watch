@@ -35,18 +35,6 @@
 .cp-glow-cyan { top: -12vw; right: -8vw; background: var(--cp-cyan); }
 .cp-glow-magenta { bottom: -18vw; left: -10vw; background: var(--cp-magenta); opacity: 0.28; }
 
-.cp-scanlines {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.03) 0 1px,
-    transparent 1px 4px
-  );
-}
-
 .cp-nav {
   display: flex;
   align-items: center;
@@ -114,9 +102,7 @@
   display: grid;
   place-items: center;
   border: 1px solid var(--cp-line);
-  background:
-    radial-gradient(circle at 50% 40%, rgba(0, 240, 255, 0.12), transparent 60%),
-    var(--cp-panel);
+  background: var(--cp-panel);
   overflow: hidden;
 }
 
@@ -149,7 +135,7 @@
   width: 54%;
   aspect-ratio: 1.5;
   transform: rotate(-8deg);
-  background: linear-gradient(150deg, #1a1a2e, #0a0a14);
+  background: #14142a;
   border: 2px solid rgba(0, 240, 255, 0.5);
   border-radius: 12px;
   box-shadow:
@@ -295,7 +281,7 @@
 }
 .cp-buy {
   flex: 1;
-  background: linear-gradient(90deg, var(--cp-cyan), var(--cp-magenta));
+  background: var(--cp-cyan);
   color: #05050b;
   box-shadow: 0 0 26px rgba(255, 43, 214, 0.4);
 }
