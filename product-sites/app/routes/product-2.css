@@ -257,6 +257,17 @@
   letter-spacing: -0.02em;
   color: var(--nb-forest);
 }
+.nb-price-message {
+  display: block;
+  max-width: 210px;
+  color: var(--nb-forest);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(21px, 2.4vw, 31px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+.nb-quote-price { display: none; }
 .nb-stock {
   display: inline-flex;
   align-items: center;

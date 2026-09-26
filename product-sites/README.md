@@ -20,9 +20,13 @@ rules without relying on visual formatting:
 <strong class="cp-price" data-price="$3,799.00" data-currency="USD" data-size="Compact">$3,799.00</strong>
 ```
 
-Product 1 and Product 2 use a formatted currency string in `data-price`. Product 3 stores a cents value in
-`data-price` and includes `data-price-unit="cents"`. Product 4 uses `data-current-price` rather than
-`data-price`:
+Product 1 uses a formatted currency string in `data-price`. Product 2 has no visible product price; it stores its
+value in a textless `data-quote-price` element. Product 3 stores a cents value in `data-price` and includes
+`data-price-unit="cents"`. Product 4 uses `data-current-price` rather than `data-price`:
+
+```html
+<span data-quote-price="$289.00" data-currency="USD" data-capacity="Expedition" data-color="Moss"></span>
+```
 
 ```html
 <strong data-current-price="$649.00" data-currency="USD" data-finish="Oat">$649.00</strong>

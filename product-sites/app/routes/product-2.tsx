@@ -161,15 +161,14 @@ export default function Product2() {
           <div className="nb-price-block">
             <div>
               <span className="nb-price-label">Price</span>
-              <strong
-                className="nb-price"
-                data-price={price}
+              <span className="nb-price-message">Quote available at checkout</span>
+              <span
+                className="nb-quote-price"
+                data-quote-price={price}
                 data-currency="USD"
                 data-capacity={capacity}
                 data-color={color}
-              >
-                {price}
-              </strong>
+              />
             </div>
             <span className="nb-stock">In stock</span>
           </div>
@@ -191,9 +190,7 @@ export default function Product2() {
                 >
                   <strong>{option.name}</strong>
                   <small>{option.detail}</small>
-                  <small className="nb-capacity-price">
-                    {priceFormat.format(option.price)}
-                  </small>
+                  <small className="nb-capacity-price">Quote at checkout</small>
                 </button>
               ))}
             </div>
@@ -318,7 +315,7 @@ export default function Product2() {
               <div className="nb-similar-thumb" aria-hidden="true"><i /></div>
               <p className="nb-similar-category">{item.category}</p>
               <h3>{item.name}</h3>
-              <strong className="nb-similar-price" data-price={item.price} data-currency="USD">
+              <strong className="nb-similar-price" data-listing-price={item.price} data-currency="USD">
                 {item.price}
               </strong>
             </a>
