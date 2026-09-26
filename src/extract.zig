@@ -74,8 +74,8 @@ pub fn extract(product: *Product, io: std.Io, allocator: std.mem.Allocator) !voi
         var price_str = try get_price(body, &url);
         price_str = format_price(price_str);
         const price: i32 = try convert_price(price_str, url.is_minor);
-        std.debug.print("{s}\n", .{price_str});
-        std.debug.print("{d}\n", .{price});
+        std.debug.print("Price from page: ${s}\n", .{price_str});
+        std.debug.print("Minor Price: {d}\n", .{price});
     }
 }
 
