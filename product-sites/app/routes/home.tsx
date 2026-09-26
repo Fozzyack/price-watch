@@ -21,6 +21,7 @@ export default function Home() {
           <a href="/product-1">Product 1</a>
           <a href="/product-2">Product 2</a>
           <a href="/product-3">Product 3</a>
+          <a href="/product-4">Product 4</a>
         </div>
         <a className="bag-link" href="#bag">
           Bag <span>0</span>
