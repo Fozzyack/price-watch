@@ -8,7 +8,10 @@ const Url = struct {
 
 const Product = struct {
     name: []const u8 = undefined,
-    urls: [] Url = undefined,
+    urls: [] Url = &.{},
+    fn deinit(self: *Product, allocator: std.mem.Allocator) void {
+        allocator.free(self.urls);
+    }
 };
 
 pub fn init_product(name: []const u8) Product {
