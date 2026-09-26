@@ -13,7 +13,7 @@ pub fn main() !void {
     const io = threaded_io.io();
     std.debug.print("{any}\n", .{@TypeOf(io)});
 
-    const body = try html.get_page_content("frasier.dev", arena.allocator(), io);
+    const body = try html.get_page_content("http://localhost:5173/product-1", arena.allocator(), io);
 
     std.debug.print("{s}\n", .{body});
 }

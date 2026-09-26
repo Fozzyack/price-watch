@@ -1,17 +1,15 @@
 const std = @import("std");
 
-pub fn get_page_content(page: []const u8, allocator: std.mem.Allocator, io: std.Io) ![]u8 {
+pub fn get_page_content(url: []const u8, allocator: std.mem.Allocator, io: std.Io) ![]u8 {
     var client: std.http.Client = .{
         .allocator = allocator,
         .io = io,
     };
     defer client.deinit();
 
-    var req = try client.request(.GET, .{
-        .scheme = "https",
-        .host = .{ .percent_encoded = page },
-        .path = .{ .percent_encoded = "/" },
-    }, .{});
+    const uri = try std.Uri.parse(url);
+
+    var req = try client.request(.GET, uri, .{});
     defer req.deinit();
 
     try req.sendBodiless();
