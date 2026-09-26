@@ -1,87 +1,48 @@
-# Welcome to React Router!
+# product-sites
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Practice storefronts for the [price-watch](../README.md) scraper. This is a [React Router](https://reactrouter.com/)
+app styled with Tailwind and per-page CSS. The pages are fake products with clearly marked prices, so the Zig scraper
+has realistic HTML to parse.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Routes
 
-## Features
+- `/` — Cove Audio storefront hero (`app/routes/home.tsx`, styles in `app/app.css`).
+- `/product-1` — VOLTAGE 9 Neural Deck, a cyberpunk product page (`app/routes/product-1.tsx`, styles in
+  `app/routes/product-1.css`). Includes size-dependent pricing, key features, specifications, dimensions, reviews,
+  similar items, and a link footer.
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## Price markup
 
-## Getting Started
+Prices are wrapped in elements carrying `data-price` and `data-currency` attributes so the scraper can target them
+without relying on visual formatting:
 
-### Installation
+```html
+<strong class="cp-price" data-price="$3,799.00" data-currency="USD" data-size="Compact">$3,799.00</strong>
+```
 
-Install the dependencies:
+`data-price` changes with the selected size.
+
+## Getting started
+
+Install dependencies and start the dev server:
 
 ```bash
-npm install
+bun install
+bun run dev
 ```
 
-### Development
+The app is available at `http://localhost:5173`.
 
-Start the development server with HMR:
+## Verify changes
 
 ```bash
-npm run dev
+bun run typecheck
+bun run build
 ```
 
-Your application will be available at `http://localhost:5173`.
+## Project layout
 
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+- `app/routes.ts` — route definitions.
+- `app/routes/*.tsx` — page components.
+- `app/routes/*.css` — page-scoped styles (only `app/app.css` is global).
+- `app/root.tsx` — document shell and font links.

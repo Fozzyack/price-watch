@@ -25,6 +25,15 @@ Early development. The project can fetch an HTTPS page and define products with 
 - Product URL patterns are stored but not yet used to extract a price.
 - Products and price history are not persisted.
 
+## Test Sites
+
+`./product-sites/` is a React Router app with practice pages used to exercise the scraper. Run it with `bun run dev` inside that folder.
+
+- `/` — Cove Audio storefront hero.
+- `/product-1` — VOLTAGE 9 Neural Deck, a cyberpunk product page with size-dependent pricing, specifications, dimensions, reviews, and similar items.
+
+Prices are marked with `data-price` and `data-currency` attributes to make extraction straightforward.
+
 ## Next Milestone
 
 Add a pure price parser that accepts saved HTML and a pattern, then cover it with unit tests before connecting it to live product pages.
