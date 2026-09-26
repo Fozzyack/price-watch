@@ -27,7 +27,13 @@ Early development. The project can fetch an HTTPS page and define products with 
 
 ## Test Sites
 
-`./product-sites/` is a React Router app with practice pages used to exercise the scraper. Run it with `bun run dev` inside that folder.
+`./product-sites/` is a React Router app with practice pages used to exercise the scraper. Start it from that folder with:
+
+```
+bun run dev -- --host 127.0.0.1
+```
+
+The `--host 127.0.0.1` flag is required: Vite otherwise binds only to the IPv6 loopback (`[::1]`), and Zig's HTTP client cannot connect to a bracketed IPv6 literal. Binding IPv4 lets the scraper reach it at `http://127.0.0.1:5173/...`.
 
 - `/` — Cove Audio storefront hero.
 - `/product-1` — VOLTAGE 9 Neural Deck, a cyberpunk product page with size-dependent pricing, specifications, dimensions, reviews, and similar items.
