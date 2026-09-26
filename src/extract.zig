@@ -1,11 +1,11 @@
 const std = @import("std");
 
-const ProductUrl = struct {
+pub const ProductUrl = struct {
     url: []const u8,
     pattern: []const u8,
 };
 
-const Product = struct {
+pub const Product = struct {
     name: []const u8,
     urls: []ProductUrl = &.{},
     pub fn init_product(name: []const u8) Product {
