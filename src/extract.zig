@@ -1,4 +1,5 @@
 const std = @import("std");
+const http = @import("html.zig");
 
 pub const ProductUrl = struct {
     url: []const u8,
@@ -32,3 +33,19 @@ pub const Product = struct {
         allocator.free(self.urls);
     }
 };
+
+fn get_price(body: []u8, url: *const ProductUrl) ![]u8 {
+    const start: usize = std.mem.indexOf(u8, body, url.pattern) orelse unreachable;
+    const price_start = start + url.pattern.len;
+    const price_end = std.mem.indexOfPos(u8, body, price_start, "\"") orelse return error.InvalidPrice;
+    const price = body[price_start..price_end];
+    return price;
+}
+
+pub fn extract(product: *Product, io: std.Io, allocator: std.mem.Allocator) !void {
+    for (product.urls) |url| {
+        const body = try http.get_page_content(url.url, allocator, io);
+        const price = try get_price(body, &url);
+        std.debug.print("{s}\n", .{price});
+    }
+}
