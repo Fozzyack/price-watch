@@ -124,6 +124,7 @@ export default function Product2() {
           <a href="/product-1">Deckware</a>
           <a href="/product-2" aria-current="page">Packs</a>
           <a href="/product-3">Layers</a>
+          <a href="/product-4">Coffee</a>
         </div>
         <button className="nb-cart" type="button">Cart · 0</button>
       </nav>
