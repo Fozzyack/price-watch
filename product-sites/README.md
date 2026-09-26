@@ -10,6 +10,9 @@ has realistic HTML to parse.
 - `/product-1` — VOLTAGE 9 Neural Deck, a cyberpunk product page (`app/routes/product-1.tsx`, styles in
   `app/routes/product-1.css`). Includes size-dependent pricing, key features, specifications, dimensions, reviews,
   similar items, and a link footer.
+- `/product-2` — RIDGELINE 45 Expedition Pack, with a hidden quote price in `data-quote-price`.
+- `/product-3` — The Petty Printer, with its price stored as cents in `data-price`.
+- `/product-4` — Luna One espresso machine, with a formatted price in `data-current-price`.
 
 ## Price markup
 
@@ -38,10 +41,11 @@ Install dependencies and start the dev server:
 
 ```bash
 bun install
-bun run dev
+bun run dev -- --host 127.0.0.1
 ```
 
-The app is available at `http://localhost:5173`.
+The app is available at `http://127.0.0.1:5173`. The explicit IPv4 host is required because the Zig scraper cannot
+connect to Vite's default IPv6 loopback address.
 
 ## Verify changes
 
