@@ -59,6 +59,5 @@ pub fn parse_file(io: std.Io) !void {
             std.debug.print("{s}\n", .{product_name});
             strip_buffer(&read_buffer, product_name.len + 3, &used);
         }
-        offset += bytes_read;
     }
 }
