@@ -1,5 +1,6 @@
 const std = @import("std");
 const extract = @import("extract.zig");
+const file_stuff = @import("file_reader.zig");
 
 pub fn main() !void {
     var gpa: std.heap.DebugAllocator(.{}) = .init;
@@ -24,8 +25,8 @@ pub fn main() !void {
         .pattern_start = "Value: \"",
         .pattern_end = "\"",
     }, arena.allocator());
-    try product_2.add_url(.{ .
-        url = "https://www.amazon.com.au/Oura-Ring-Tracking-Wearable-Fitness/dp/B0D9WTSRP8?th=1", 
+    try product_2.add_url(.{ 
+        .url = "https://www.amazon.com.au/Oura-Ring-Tracking-Wearable-Fitness/dp/B0D9WTSRP8?th=1", 
         .pattern_start = "<span class=\"a-price aok-align-center apex-pricetopay-value\" data-a-size=\"xl\" data-a-color=\"base\"><span class=\"a-offscreen\">", 
         .pattern_end = "</span>" 
     }, arena.allocator());
@@ -38,4 +39,6 @@ pub fn main() !void {
 
     try extract.extract(&product_1, io, arena.allocator());
     try extract.extract(&product_2, io, arena.allocator());
+
+    try file_stuff.parse_file(io);
 }
