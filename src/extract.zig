@@ -69,14 +69,16 @@ fn convert_price(price: []u8, is_minor: bool) !i32 {
 }
 
 pub fn extract(product: *Product, io: std.Io, allocator: std.mem.Allocator) !void {
-    for (product.urls) |url| {
+    std.debug.print("Name: {s}\n", .{product.*.name});
+    for (product.*.urls) |url| {
         const body = try http.get_page_content(url.url, allocator, io);
         var price_str = try get_price(body, &url);
         price_str = format_price(price_str);
-        const price: i32 = try convert_price(price_str, url.is_minor);
         std.debug.print("Price from page: ${s}\n", .{price_str});
+        const price: i32 = try convert_price(price_str, url.is_minor);
         std.debug.print("Minor Price: {d}\n", .{price});
     }
+    std.debug.print("\n", .{});
 }
 
 // Tests ----
