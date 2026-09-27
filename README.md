@@ -6,7 +6,7 @@ A small Zig project that fetches HTML from selected product sites to monitor ite
 
 ## Status
 
-Early development. The project fetches product pages, extracts prices between configured markers, and removes a leading `$` and commas. Price monitoring and persistence are still to be built.
+The project can fetch live product pages, extract prices between configured markers, remove a leading `$` and commas, and convert prices to minor units. It has been tested against live Oura Ring 4 listings from JB Hi-Fi, Amazon Australia, and PriceHound. Price monitoring and persistence are still to be built.
 
 ## Project Layout
 
@@ -24,6 +24,17 @@ Early development. The project fetches product pages, extracts prices between co
 
 - Statuses below 200 or above 300 return `error.StatusNotOk`.
 - Products and price history are not persisted.
+- Price extraction depends on retailer-specific HTML markers, which can change when a site is redesigned.
+
+## Running Against Live Pages
+
+`src/main.zig` currently contains an Oura Ring 4 example configured with live retailer URLs. Run it with:
+
+```
+zig build run
+```
+
+The program prints the product name, the extracted price and currency for each page, and the normalized price in minor units. Live pages and their markup can change, so update each URL's `pattern_start` and `pattern_end` values when extraction no longer matches.
 
 ## Test Sites
 
