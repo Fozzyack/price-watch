@@ -25,12 +25,14 @@ pub fn parse_file(io: std.Io) !void {
     defer file.close(io);
 
     var read_buffer: [1028]u8 = undefined;
-    var offset: usize = 0;
 
     var name_buffer: [256]u8 = undefined;
 
+    var offset: usize = 0;
+    var used: usize = 0;
+
     while(true) {
-        const bytes_read = file.readPositionalAll(io, &read_buffer, offset);
+        const bytes_read = file.readPositionalAll(io, &read_buffer[0..used], offset);
         if (bytes_read == 0) { // EOF
             break;
         }
@@ -41,6 +43,10 @@ pub fn parse_file(io: std.Io) !void {
                     if ( err == ProductParseError.EndingDelimiterNotFound ) continue
                     else return err;
                 };
+                const consumed: usize = product_name.len;
+                const remaining = used - consumed;
+                std.mem.copyForwards(u8, read_buffer[0..remaining], read_buffer[consumed..used]);
+                used = remaining;
             }
         }
         offset += bytes_read;
