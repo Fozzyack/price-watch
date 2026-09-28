@@ -70,15 +70,38 @@ fn parse_url(buffer: []u8, allocator: std.mem.Allocator) !extract.ProductUrl {
             delimiter_count += 1;
         }
     }
-    if (delimiter_count != delimiter_indexes.len) return ProductParseError.DelimitersNotFound;
+    if (delimiter_count < 2) return ProductParseError.DelimitersNotFound;
+
+    const pattern_end_end = if (delimiter_count > 2) delimiter_indexes[2] else buffer.len;
+    var currency: []const u8 = "AUD";
+    var is_minor = false;
+
+    if (delimiter_count > 2) {
+        const currency_end = if (delimiter_count > 3) delimiter_indexes[3] else buffer.len;
+        currency = try allocator.dupe(u8, trim_whitespace(buffer[delimiter_indexes[2] + 1 .. currency_end]));
+    }
+    if (delimiter_count > 3) {
+        is_minor = try parse_is_minor(trim_whitespace(buffer[delimiter_indexes[3] + 1 ..]));
+    }
 
     return .{
         .url = try allocator.dupe(u8, trim_whitespace(buffer[0..delimiter_indexes[0]])),
         .pattern_start = try allocator.dupe(u8, trim_whitespace(buffer[delimiter_indexes[0] + 1 .. delimiter_indexes[1]])),
-        .pattern_end = try allocator.dupe(u8, trim_whitespace(buffer[delimiter_indexes[1] + 1 .. delimiter_indexes[2]])),
-        .currency = try allocator.dupe(u8, trim_whitespace(buffer[delimiter_indexes[2] + 1 .. delimiter_indexes[3]])),
-        .is_minor = try parse_is_minor(trim_whitespace(buffer[delimiter_indexes[3] + 1 ..])),
+        .pattern_end = try allocator.dupe(u8, trim_whitespace(buffer[delimiter_indexes[1] + 1 .. pattern_end_end])),
+        .currency = currency,
+        .is_minor = is_minor,
     };
+}
+
+test "parse_url uses defaults for optional fields" {
+    var buffer = "https://example.com | data-price=\" | \"".*;
+    const url = try parse_url(&buffer, std.testing.allocator);
+    defer std.testing.allocator.free(url.url);
+    defer std.testing.allocator.free(url.pattern_start);
+    defer std.testing.allocator.free(url.pattern_end);
+
+    try std.testing.expectEqualStrings("AUD", url.currency);
+    try std.testing.expect(!url.is_minor);
 }
 
 pub fn parse_file(io: std.Io, allocator: std.mem.Allocator) ![]extract.Product {
