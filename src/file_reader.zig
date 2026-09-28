@@ -30,6 +30,18 @@ fn strip_buffer(buffer: []u8, consumed: usize, used: *usize) void {
     used.* = remaining;
 }
 
+fn strip_empty_lines(buffer: []u8, used: *usize) void {
+    var index: usize = 0;
+    for(buffer) | character | {
+        if (character != '\n') break;
+        index += 1;
+    }
+
+    if (index > 0) {
+        strip_buffer(buffer, index, used);
+    }
+}
+
 
 pub fn parse_file(io: std.Io) !void {
     const dir = std.Io.Dir.cwd();
@@ -37,7 +49,6 @@ pub fn parse_file(io: std.Io) !void {
     defer file.close(io);
 
     var read_buffer: [1024]u8 = undefined;
-
     var name_buffer: [256]u8 = undefined;
 
     var offset: usize = 0;
@@ -50,6 +61,8 @@ pub fn parse_file(io: std.Io) !void {
         }
         offset += bytes_read;
         used += bytes_read;
+
+        strip_empty_lines(&read_buffer, &used);
 
         if(read_buffer[0] == '[') {
             const product_name: []const u8 = get_product_name(&read_buffer, &name_buffer) catch | err | {
