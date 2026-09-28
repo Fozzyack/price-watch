@@ -97,10 +97,7 @@ pub fn parse_file(io: std.Io, allocator: std.mem.Allocator) ![]const extract.Pro
                 strip_buffer(&read_buffer, 1, &used);
             }
             else if (read_buffer[0] == '[') {
-                const name: []const u8 = parse_name(read_buffer[0..new_line_index], &name_buffer) catch |err| {
-                    if (err ==
-                        ProductParseError.EndingDelimiterNotFound) continue else return err;
-                };
+                const name: []const u8 = try parse_name(read_buffer[0..new_line_index], &name_buffer);
                 const product_name = try allocator.dupe(u8, name);
                 products = try allocator.realloc(products, products.len + 1);
                 const product: extract.Product = extract.Product.init_product(product_name);
