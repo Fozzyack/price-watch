@@ -2,6 +2,10 @@
 
 A small Zig project for learning through a practical price checker. It reads products from `pages.config`, fetches each page, extracts a price between configured HTML markers, and prints the result in minor units.
 
+> [!ATTENTION]
+> As this project is for learning the language / syntax. I decided to do a lot of string manipulations manually instead
+> of using `std.mem`
+
 ## Status
 
 The project currently supports:
