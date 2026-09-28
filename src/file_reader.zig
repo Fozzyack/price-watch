@@ -37,9 +37,7 @@ fn strip_empty_lines(buffer: []u8, used: *usize) void {
         index += 1;
     }
 
-    if (index > 0) {
-        strip_buffer(buffer, index, used);
-    }
+    if (index > 0) strip_buffer(buffer, index, used);
 }
 
 
