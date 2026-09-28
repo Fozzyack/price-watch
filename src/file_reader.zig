@@ -36,7 +36,7 @@ fn trim_whitespace(buffer: []u8) []const u8{
         start += 1;
     }
     while (start < end and (buffer[start] == ' ' or buffer[start] == '\t')) {
-        end += 1;
+        end -= 1;
     }
 
     return buffer[start..end];
