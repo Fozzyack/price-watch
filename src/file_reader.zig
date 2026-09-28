@@ -33,7 +33,7 @@ fn strip_buffer(buffer: []u8, consumed: usize, used: *usize) void {
 
 pub fn parse_file(io: std.Io) !void {
     const dir = std.Io.Dir.cwd();
-    var file = try dir.openFile(io, "check_pages.config", .{ .mode = .read_only });
+    var file = try dir.openFile(io, "pages.config", .{ .mode = .read_only });
     defer file.close(io);
 
     var read_buffer: [1024]u8 = undefined;
