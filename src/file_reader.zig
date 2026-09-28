@@ -9,6 +9,7 @@ const ProductParseError = error{
     NewLineNotFound,
     TooManyDelimitersFound,
     DelimitersNotFound,
+    UrlWithoutProduct,
 };
 
 fn strip_buffer(buffer: []u8, consumed: usize, used: *usize) void {
@@ -48,7 +49,7 @@ fn find_char(buffer: []u8, delimiter: u8) !usize {
     return ProductParseError.NewLineNotFound;
 }
 
-fn parse_url(buffer: []u8) !void {
+fn parse_url(buffer: []u8, allocator: std.mem.Allocator) !extract.ProductUrl{
     var name_index: usize = 0;
     var pattern_start_index: usize = 0;
     for (buffer, 0..) | character, index | {
@@ -59,12 +60,20 @@ fn parse_url(buffer: []u8) !void {
         }
     }
     if (name_index == 0 or pattern_start_index == 0) return ProductParseError.DelimitersNotFound;
+
+    return .{
+        .url = try allocator.dupe(u8, trim_whitespace(buffer[0..name_index])),
+        .pattern_start = try allocator.dupe(u8, trim_whitespace(buffer[name_index + 1..pattern_start_index])),
+        .pattern_end = try allocator.dupe(u8, trim_whitespace(buffer[pattern_start_index + 1..])),
+    };
 }
 
-pub fn parse_file(io: std.Io) !void {
+pub fn parse_file(io: std.Io, allocator: std.mem.Allocator) ![]const extract.Product{
     const dir = std.Io.Dir.cwd();
     var file = try dir.openFile(io, "pages.config", .{ .mode = .read_only });
     defer file.close(io);
+
+    var products: []extract.Product = &.{};
 
     var read_buffer: [1024]u8 = undefined;
     var name_buffer: [256]u8 = undefined;
@@ -85,23 +94,30 @@ pub fn parse_file(io: std.Io) !void {
         while (true) {
             new_line_index = find_char(read_buffer[0..used], '\n') catch break;
             if (new_line_index == 0) {
-                print("huh ", .{});
-                print("{d}\n", .{new_line_index});
                 strip_buffer(&read_buffer, 1, &used);
             }
             else if (read_buffer[0] == '[') {
-                const product_name: []const u8 = parse_name(read_buffer[0..new_line_index], &name_buffer) catch |err| {
+                const name: []const u8 = parse_name(read_buffer[0..new_line_index], &name_buffer) catch |err| {
                     if (err ==
                         ProductParseError.EndingDelimiterNotFound) continue else return err;
                 };
-                std.debug.print("{s}\n", .{product_name});
+                const product_name = try allocator.dupe(u8, name);
+                products = try allocator.realloc(products, products.len + 1);
+                const product: extract.Product = extract.Product.init_product(product_name);
+                products[products.len - 1] = product;
+
                 strip_buffer(&read_buffer, new_line_index + 1, &used);
             } else {
-                try parse_url(read_buffer[0..new_line_index]);
+                if (products.len == 0) {
+                    return ProductParseError.UrlWithoutProduct;
+                }
+                const product_url: extract.ProductUrl = try parse_url(read_buffer[0..new_line_index], allocator);
+                try products[products.len - 1].add_url(product_url, allocator);
                 strip_buffer(&read_buffer, new_line_index + 1, &used);
             }
         }
     }
+    return products;
 }
 
 
