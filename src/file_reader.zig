@@ -9,7 +9,7 @@ const ProductParseError = error {
     NewLineBeforeEndingDelimiter,
 };
 
-fn get_product_name(buffer: []u8, output_buffer: []u8) ![]const u8{
+fn parse_product_name(buffer: []u8, output_buffer: []u8) ![]const u8{
     if (buffer[0] != '[') return ProductParseError.InvalidProductNameDelimiter;
     for(buffer[1..], 0..) | character, index | {
         if (index == output_buffer.len) return ProductParseError.ProductNameTooLong;
@@ -60,8 +60,8 @@ pub fn parse_file(io: std.Io) !void {
         offset += bytes_read;
         used += bytes_read;
 
-        strip_empty_lines(&read_buffer, &used);
 
+        strip_empty_lines(&read_buffer, &used);
         if(read_buffer[0] == '[') {
             const product_name: []const u8 = get_product_name(&read_buffer, &name_buffer) catch | err | {
                 if ( err == ProductParseError.EndingDelimiterNotFound ) continue
