@@ -35,7 +35,7 @@ fn trim_whitespace(buffer: []u8) []const u8{
     while (start < end and (buffer[start] == ' ' or buffer[start] == '\t')) {
         start += 1;
     }
-    while (start < end and (buffer[start] == ' ' or buffer[start] == '\t')) {
+    while (start < end and (buffer[end - 1] == ' ' or buffer[end - 1] == '\t')) {
         end -= 1;
     }
 
@@ -68,7 +68,7 @@ fn parse_url(buffer: []u8, allocator: std.mem.Allocator) !extract.ProductUrl{
     };
 }
 
-pub fn parse_file(io: std.Io, allocator: std.mem.Allocator) ![]const extract.Product{
+pub fn parse_file(io: std.Io, allocator: std.mem.Allocator) ![]extract.Product{
     const dir = std.Io.Dir.cwd();
     var file = try dir.openFile(io, "pages.config", .{ .mode = .read_only });
     defer file.close(io);
