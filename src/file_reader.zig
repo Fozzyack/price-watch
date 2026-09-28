@@ -1,5 +1,4 @@
 const std = @import("std");
-const print = std.debug.print;
 const extract = @import("extract.zig");
 
 const ProductParseError = error{
