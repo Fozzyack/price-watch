@@ -10,6 +10,7 @@ const ProductParseError = error{
     TooManyDelimitersFound,
     DelimitersNotFound,
     UrlWithoutProduct,
+    InvalidMinorValue,
 };
 
 fn strip_buffer(buffer: []u8, consumed: usize, used: *usize) void {
@@ -28,9 +29,9 @@ fn parse_name(buffer: []u8, output_buffer: []u8) ![]const u8 {
     return ProductParseError.EndingDelimiterNotFound;
 }
 
-fn trim_whitespace(buffer: []u8) []const u8{
+fn trim_whitespace(buffer: []u8) []const u8 {
     var start: usize = 0;
-    var end: usize = buffer.len; 
+    var end: usize = buffer.len;
 
     while (start < end and (buffer[start] == ' ' or buffer[start] == '\t')) {
         start += 1;
@@ -49,26 +50,38 @@ fn find_char(buffer: []u8, delimiter: u8) !usize {
     return ProductParseError.NewLineNotFound;
 }
 
-fn parse_url(buffer: []u8, allocator: std.mem.Allocator) !extract.ProductUrl{
-    var name_index: usize = 0;
-    var pattern_start_index: usize = 0;
-    for (buffer, 0..) | character, index | {
+fn parse_is_minor(buffer: []const u8) !bool {
+    if (buffer.len == 4 and buffer[0] == 't' and buffer[1] == 'r' and buffer[2] == 'u' and buffer[3] == 'e') {
+        return true;
+    }
+    if (buffer.len == 5 and buffer[0] == 'f' and buffer[1] == 'a' and buffer[2] == 'l' and buffer[3] == 's' and buffer[4] == 'e') {
+        return false;
+    }
+    return ProductParseError.InvalidMinorValue;
+}
+
+fn parse_url(buffer: []u8, allocator: std.mem.Allocator) !extract.ProductUrl {
+    var delimiter_indexes: [4]usize = undefined;
+    var delimiter_count: usize = 0;
+    for (buffer, 0..) |character, index| {
         if (character == '|') {
-            if (name_index == 0) name_index = index
-            else if (pattern_start_index == 0) pattern_start_index = index
-            else return ProductParseError.TooManyDelimitersFound;
+            if (delimiter_count == delimiter_indexes.len) return ProductParseError.TooManyDelimitersFound;
+            delimiter_indexes[delimiter_count] = index;
+            delimiter_count += 1;
         }
     }
-    if (name_index == 0 or pattern_start_index == 0) return ProductParseError.DelimitersNotFound;
+    if (delimiter_count != delimiter_indexes.len) return ProductParseError.DelimitersNotFound;
 
     return .{
-        .url = try allocator.dupe(u8, trim_whitespace(buffer[0..name_index])),
-        .pattern_start = try allocator.dupe(u8, trim_whitespace(buffer[name_index + 1..pattern_start_index])),
-        .pattern_end = try allocator.dupe(u8, trim_whitespace(buffer[pattern_start_index + 1..])),
+        .url = try allocator.dupe(u8, trim_whitespace(buffer[0..delimiter_indexes[0]])),
+        .pattern_start = try allocator.dupe(u8, trim_whitespace(buffer[delimiter_indexes[0] + 1 .. delimiter_indexes[1]])),
+        .pattern_end = try allocator.dupe(u8, trim_whitespace(buffer[delimiter_indexes[1] + 1 .. delimiter_indexes[2]])),
+        .currency = try allocator.dupe(u8, trim_whitespace(buffer[delimiter_indexes[2] + 1 .. delimiter_indexes[3]])),
+        .is_minor = try parse_is_minor(trim_whitespace(buffer[delimiter_indexes[3] + 1 ..])),
     };
 }
 
-pub fn parse_file(io: std.Io, allocator: std.mem.Allocator) ![]extract.Product{
+pub fn parse_file(io: std.Io, allocator: std.mem.Allocator) ![]extract.Product {
     const dir = std.Io.Dir.cwd();
     var file = try dir.openFile(io, "pages.config", .{ .mode = .read_only });
     defer file.close(io);
@@ -90,13 +103,11 @@ pub fn parse_file(io: std.Io, allocator: std.mem.Allocator) ![]extract.Product{
         offset += bytes_read;
         used += bytes_read;
 
-
         while (true) {
             new_line_index = find_char(read_buffer[0..used], '\n') catch break;
             if (new_line_index == 0) {
                 strip_buffer(&read_buffer, 1, &used);
-            }
-            else if (read_buffer[0] == '[') {
+            } else if (read_buffer[0] == '[') {
                 const name: []const u8 = try parse_name(read_buffer[0..new_line_index], &name_buffer);
                 const product_name = try allocator.dupe(u8, name);
                 products = try allocator.realloc(products, products.len + 1);
@@ -116,10 +127,3 @@ pub fn parse_file(io: std.Io, allocator: std.mem.Allocator) ![]extract.Product{
     }
     return products;
 }
-
-
-
-
-
-
-
