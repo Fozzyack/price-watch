@@ -68,18 +68,25 @@ fn convert_price(price: []u8, is_minor: bool) !i32 {
     return converted_price;
 }
 
+fn process_url(url: ProductUrl, io: std.Io, allocator: std.mem.Allocator) !void {
+    const body = try http.get_page_content(url.url, allocator, io);
+    var price_str = try get_price(body, &url);
+    price_str = format_price(price_str);
+    std.debug.print("Price from page: url:{s} ${s} {s}\n", .{ url.url, price_str, url.currency });
+    const price: i32 = try convert_price(price_str, url.is_minor);
+    std.debug.print("Minor Price: {d}\n", .{price});
+}
+
 pub fn extract(product: *Product, io: std.Io, allocator: std.mem.Allocator) !void {
     std.debug.print("Name: {s}\n", .{product.*.name});
     for (product.*.urls) |url| {
-        const body = try http.get_page_content(url.url, allocator, io);
-        var price_str = try get_price(body, &url);
-        price_str = format_price(price_str);
-        std.debug.print("Price from page: url:{s} ${s} {s}\n", .{url.url, price_str, url.currency});
-        const price: i32 = try convert_price(price_str, url.is_minor);
-        std.debug.print("Minor Price: {d}\n", .{price});
+        process_url(url, io, allocator) catch |err| {
+            std.debug.print("Could not get price from {s}: {s}\n", .{ url.url, @errorName(err) });
+        };
     }
     std.debug.print("\n", .{});
 }
+
 
 // Tests ----
 
